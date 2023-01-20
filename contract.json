@@ -1,0 +1,18 @@
+{
+  "inputTables": [
+    {
+      "tableName": "my_table",
+      "csv": {
+        "path": "my_file.csv",
+        "delimiter": "|",
+        "header": true
+      }
+    },
+    {
+      "tableName": "second_table",
+      "parquet": {
+        "path": "file.parquet"
+      }
+    }
+  ]
+}
