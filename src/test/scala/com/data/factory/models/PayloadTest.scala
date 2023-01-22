@@ -6,8 +6,6 @@ import org.json4s.native.Serialization.read
 import org.scalatest._
 class PayloadTest extends FlatSpec {
 
-
-
   "constructor" should "create a valid object when receive valid attributes" in {
     val path = "/path/file.csv"
     val delimiter = "|"
@@ -18,7 +16,10 @@ class PayloadTest extends FlatSpec {
     val parquetTableName = "myParquetTable"
     val csvTable = new TableSpec(csvTableName, csv)
     val parquetTable = new TableSpec(parquetTableName, parquet)
-    val payload =  List(csvTable, parquetTable)
+    val encodedQuery = "c2VsZWN0IDEgYXMgZmllbGQ="
+    val outputTable: TableSpec = new TableSpec("output_table", csv)
+    val payload = new Payload(List(csvTable, parquetTable), encodedQuery, outputTable)
+    assert(payload.isValid)
   }
 
 }

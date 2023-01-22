@@ -1,6 +1,6 @@
 package com.data.factory
 
-import com.data.factory.adapters.{Base64Encoder, SparkSessionFactory}
+import com.data.factory.adapters.{Base64Encoder, FileOperator, SparkSessionFactory}
 import com.data.factory.exceptions.RequestException
 import com.data.factory.models.Payload
 import com.data.factory.ports.Encoder
@@ -10,7 +10,7 @@ import org.json4s.native.Serialization
 import org.json4s.native.Serialization.read
 
 object App extends Serializable{
-    val log = Logger("App")
+    private val log = Logger("App")
 
     private def makeRequest(jsonInput: String): Payload = try {
         implicit val formats = Serialization.formats(NoTypeHints)
@@ -30,14 +30,17 @@ object App extends Serializable{
             log.info("Decoding encodedInput %s".format(encodedInput))
             val decodedInput = encoder.decode(encodedInput)
             log.info("Decoded input %s".format(decodedInput))
-            val request = makeRequest(decodedInput)
+            val request: Payload = makeRequest(decodedInput)
+            request.isValid()
 
-            log.info("Creating RDD")
-            val dataSeq = Seq(("Java", 20000), ("Python", 100000), ("Scala", 3000))
-            val rdd = spark.sparkContext.parallelize(dataSeq)
-            val df = spark.createDataFrame(rdd)
-            log.info(rdd.count.toString)
-            log.info(df.printSchema().toString)
+            log.info(request.query)
+            val decodedQuery = encoder.decode(request.query)
+
+            val operator = new FileOperator(spark)
+            request.inputTables.map(t => operator.getTable(t))
+            val transformDataFrame = operator.sql(decodedQuery)
+            operator.saveTable(request.outputTable, transformDataFrame)
+
             log.info("Process ended successfully.")
         } catch {
             case e: Exception => throw RequestException(e.getClass.toString.concat(":").concat(e.getMessage))

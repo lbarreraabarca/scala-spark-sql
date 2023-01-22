@@ -6,7 +6,6 @@ import com.data.factory.ports.Encoder
 class Base64Encoder extends Encoder with Serializable {
 
   import java.util.Base64
-  import java.nio.charset.StandardCharsets
 
   def encode(input: String): String =
     if (input == null || input.isEmpty()) throw  EncoderException("Input cannot be null or empty.")
