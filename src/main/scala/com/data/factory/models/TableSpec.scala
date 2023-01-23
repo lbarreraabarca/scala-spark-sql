@@ -1,5 +1,6 @@
 package com.data.factory.models
 
+import com.data.factory.exceptions.TableSpecException
 import com.data.factory.utils.FieldValidator
 import com.typesafe.scalalogging.Logger
 
@@ -24,12 +25,14 @@ class TableSpec extends Serializable{
     this.tableName = tableName
     this.parquet = parquet
   }
-  def isValid(): Boolean = {
+  def isValid(): Boolean = try {
     val validator = new FieldValidator()
     validator.validStringField("tableName")(tableName)
     if (Option(this.csv).isDefined) this.csv.isValid()
     else if (Option(this.parquet).isDefined) this.parquet.isValid()
     else false
+  } catch {
+    case e: Exception => throw TableSpecException("%s %s".format(e.getClass, e.getMessage))
   }
 
   def tableType(): String = {

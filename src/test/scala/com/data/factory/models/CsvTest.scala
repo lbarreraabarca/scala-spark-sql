@@ -1,5 +1,6 @@
 package com.data.factory.models
 
+import com.data.factory.exceptions.RequestException
 import org.json4s.NoTypeHints
 import org.json4s.native.Serialization
 import org.json4s.native.Serialization.read
@@ -29,4 +30,12 @@ class CsvTest extends FlatSpec {
     assert(delimiter == csv.delimiter)
     assert(header == csv.header)
   }
+
+  it should "throw RequestException because path is null" in {
+    val csv = new Csv(null, delimiter, header)
+    val exception = intercept[RequestException] {
+      csv.isValid()
+    }
+  }
+
 }

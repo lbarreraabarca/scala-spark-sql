@@ -1,5 +1,6 @@
 package com.data.factory.models
 
+import com.data.factory.exceptions.RequestException
 import com.data.factory.utils.FieldValidator
 class Csv extends Serializable{
 
@@ -13,11 +14,12 @@ class Csv extends Serializable{
     this.header = header
   }
 
-  def isValid(): Boolean = {
+  def isValid(): Boolean = try {
     val validator = new FieldValidator()
     validator.validStringField("path")(path)
     validator.validStringField("delimiter")(delimiter)
     validator.validBoolean("header")(header)
+  } catch  {
+    case e: Exception => throw RequestException("%s %s".format(e.getClass, e.getMessage))
   }
-
 }

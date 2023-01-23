@@ -157,6 +157,22 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.scoverage</groupId>
+        <artifactId>scoverage-maven-plugin</artifactId>
+        <version>1.4.1</version>
+        <configuration>
+          <additionalForkedProjectProperties>skipTests=false</additionalForkedProjectProperties>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

@@ -7,18 +7,12 @@ import scala.util.matching.Regex
 class FieldValidator {
   private val invalidField: String = "%s cannot be null or empty."
 
-  val validField: String => String => Regex => Boolean = field => fieldName => matcher =>
-    field match {
-      case matcher(_*) => true
-      case _ => throw FieldValidatorException(invalidField.format(fieldName))
-    }
-
   val validStringField: String => String => Boolean = fieldName => fieldValue =>
-    if (fieldValue == null || fieldValue.isEmpty) throw FieldValidatorException(invalidField.format(fieldName))
-    else !(fieldValue == null || fieldValue.isEmpty)
+    if (!Option(fieldValue).isDefined || fieldValue.isEmpty) throw FieldValidatorException(invalidField.format(fieldName))
+    else Option(fieldValue).isDefined || fieldValue.isEmpty
 
   val validBoolean: String => Boolean => Boolean = fieldName => fieldValue =>
-    if (fieldValue == null) throw FieldValidatorException(invalidField.format(fieldName))
-    else !(fieldValue == null)
+    if (!Option(fieldValue).isDefined) throw FieldValidatorException(invalidField.format(fieldName))
+    else Option(fieldValue).isDefined
 
 }
