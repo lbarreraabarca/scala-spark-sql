@@ -3,7 +3,7 @@ name: Java CI
 on: [push]
 
 jobs:
-  build:
+  unit-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,7 +15,6 @@ jobs:
           distribution: 'adopt'
       - name: Test
         run: mvn test
-
   build:
     runs-on: ubuntu-latest
 
