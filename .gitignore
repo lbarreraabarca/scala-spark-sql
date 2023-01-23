@@ -4,3 +4,5 @@ target
 .vscode
 .bloop
 output
+contractbkp.json
+runbkp.sh
