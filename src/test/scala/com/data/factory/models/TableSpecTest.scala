@@ -35,6 +35,17 @@ class TableSpecTest extends FlatSpec{
     assert(table.parquet.path == path)
   }
 
+  it should "create a valid object when receive a valid avro and tableName." in {
+    val path = "/path/file.avro"
+    val tableName = "myTable"
+    val avro = new Avro(path)
+
+    val table = new TableSpec(tableName, avro)
+
+    assert(table.isValid())
+    assert(table.avro.path == path)
+  }
+
   it should "throw TableSpecException when tableName is null." in {
     val path = "/path/file.parquet"
     val tableName = null

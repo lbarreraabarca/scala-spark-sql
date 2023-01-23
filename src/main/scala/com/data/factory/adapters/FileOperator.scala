@@ -36,6 +36,10 @@ class FileOperator extends DataOperator with Serializable {
         val dataFrame = this.session.read.parquet(tableSpec.parquet.path)
         dataFrame.createOrReplaceTempView(tableSpec.tableName)
         dataFrame
+      case "avro" =>
+        val dataFrame = this.session.read.format("avro").load(tableSpec.avro.path)
+        dataFrame.createOrReplaceTempView(tableSpec.tableName)
+        dataFrame
       case _ => throw DataOperatorException("Invalid format file %s".format(tableSpec.tableType))
     }
   }
@@ -58,6 +62,10 @@ class FileOperator extends DataOperator with Serializable {
       case "parquet" => dataFrame.write
         .mode(SaveMode.Overwrite)
         .parquet(tableSpec.parquet.path)
+      case "avro" => dataFrame.write
+        .mode(SaveMode.Overwrite)
+        .format("avro")
+        .save(tableSpec.avro.path)
       case _ => throw DataOperatorException("Invalid format file %s".format(tableSpec.tableType))
     }
 
