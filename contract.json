@@ -29,7 +29,7 @@
   "outputTable": {
       "tableName": "result",
       "csv": {
-        "path": "C:\\Users\\lmabarca\\Documents\\dev\\scala-spark-sql\\data\\output\\csv",
+        "path": "C:\\Users\\lmabarca\\Documents\\dev\\scala-spark-sql\\output\\csv",
         "delimiter": ",",
         "header": true
       }

@@ -26,9 +26,6 @@ class TableSpec extends Serializable{
   }
   def isValid(): Boolean = {
     val validator = new FieldValidator()
-    log.info("isValid tableName %s".format(tableName))
-    log.info("isValid Option csv %s".format(Option(this.csv).isDefined))
-    log.info("isValid Option parquet %s".format(Option(this.parquet).isDefined))
     validator.validStringField("tableName")(tableName)
     if (Option(this.csv).isDefined) this.csv.isValid()
     else if (Option(this.parquet).isDefined) this.parquet.isValid()
@@ -36,9 +33,6 @@ class TableSpec extends Serializable{
   }
 
   def tableType(): String = {
-    log.info("tableType TableName %s".format(tableName))
-    log.info("tableType Option csv %s".format(Option(this.csv).isDefined))
-    log.info("tableType Option parquet %s".format(Option(this.parquet).isDefined))
     if (Option(this.csv).isDefined) "csv"
     else if (Option(this.parquet).isDefined) "parquet"
     else "undefined"

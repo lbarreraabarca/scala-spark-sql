@@ -38,9 +38,14 @@ object App extends Serializable{
 
             val operator = new FileOperator(spark)
             request.inputTables.map(t => operator.getTable(t))
+            log.info("Applying sql.")
             val transformDataFrame = operator.sql(decodedQuery)
+            log.info("Saving table %s".format(request.outputTable.tableName))
             operator.saveTable(request.outputTable, transformDataFrame)
 
+            log.info("Stopping and closing spark session.")
+            spark.stop()
+            spark.close()
             log.info("Process ended successfully.")
         } catch {
             case e: Exception => throw RequestException(e.getClass.toString.concat(":").concat(e.getMessage))

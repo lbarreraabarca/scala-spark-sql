@@ -4,7 +4,7 @@ import com.data.factory.exceptions.DataOperatorException
 import com.data.factory.models.TableSpec
 import com.data.factory.ports.DataOperator
 import com.typesafe.scalalogging.Logger
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 
 class FileOperator extends DataOperator with Serializable {
   private val log = Logger("FileOperator")
@@ -20,19 +20,24 @@ class FileOperator extends DataOperator with Serializable {
 
   override def getTable(tableSpec: TableSpec): DataFrame = {
     if(tableSpec.tableName == null || tableSpec.tableName.isEmpty) throw DataOperatorException(stringErrorMessage.format("tableName"))
-    var dataFrame: DataFrame = null
+
     log.info("Loading table %s that is %s table type".format(tableSpec.tableName, tableSpec.tableType))
     log.info("%s".format(tableSpec.csv.path))
     tableSpec.tableType() match {
-      case "csv" => dataFrame = this.session.read
+      case "csv" =>
+        log.info("Loading a csv file")
+        val dataFrame: DataFrame = this.session.read
           .option("delimiter", tableSpec.csv.delimiter)
-          .option("header", tableSpec.csv.header.toString)
+          .option("header", "true"/*tableSpec.csv.header.toString*/)
           .csv(tableSpec.csv.path)
-      case "parquet" => dataFrame = this.session.read.parquet(tableSpec.parquet.path)
+        dataFrame.createOrReplaceTempView(tableSpec.tableName)
+        dataFrame
+      case "parquet" =>
+        val dataFrame = this.session.read.parquet(tableSpec.parquet.path)
+        dataFrame.createOrReplaceTempView(tableSpec.tableName)
+        dataFrame
       case _ => throw DataOperatorException("Invalid format file %s".format(tableSpec.tableType))
     }
-    dataFrame.createOrReplaceTempView(tableSpec.tableName)
-    dataFrame
   }
 
   override def sql(query: String): DataFrame = {
@@ -46,10 +51,13 @@ class FileOperator extends DataOperator with Serializable {
     else
       tableSpec.tableType() match {
       case "csv" => dataFrame.write
+        .mode(SaveMode.Overwrite)
         .option("delimiter", tableSpec.csv.delimiter)
         .option("header", tableSpec.csv.header.toString)
         .csv(tableSpec.csv.path)
-      case "parquet" => dataFrame.write.parquet(tableSpec.parquet.path)
+      case "parquet" => dataFrame.write
+        .mode(SaveMode.Overwrite)
+        .parquet(tableSpec.parquet.path)
       case _ => throw DataOperatorException("Invalid format file %s".format(tableSpec.tableType))
     }
 
