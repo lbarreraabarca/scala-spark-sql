@@ -1,9 +1,21 @@
-# Spark SQL Transform
+# Data crossing using spark SQL
 
-This service allows read csv or parquet files and apply a 
-spark sql transform. Then, this dataframe will store in csv or parquet files.
+This application solve the use case when we have different files types such as csv, parquet or avro and we want to make data cross between them.
+This service allows read csv, parquet or avro files and apply a 
+spark sql transform through a query. Then, this result will store in csv or parquet files.
 
-## Request
+
+## Pre requirements
+You need to have installed the followings tools:
+
+- `java 11`
+- `mvn`
+- `spark`
+
+## Payload
+When you run your application, you need to define your payload. This must be Base64 encoded and it must have the following fields.
+Also `query` field must be Base64 encoded. Some constraints, if you define a table in `query`, it's defined as an `inputTables[*].tableName`. 
+
 ```json
 {
   "inputTables": [
@@ -45,7 +57,7 @@ spark sql transform. Then, this dataframe will store in csv or parquet files.
 ```
 
 ## How to use?
-
+You must compile the jar and run the application.
 ```bash
 mvn test
 mvn clean package
