@@ -105,7 +105,7 @@ class TableSpecTest extends FlatSpec{
     val s3 = new S3(csv)
 
     val table = new TableSpec(tableName, s3)
-    assert("csv" == table.tableType())
+    assert("s3.csv" == table.tableType())
   }
 
   it should "return undefined when receive an invalid object." in {

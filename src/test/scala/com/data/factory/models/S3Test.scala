@@ -61,11 +61,11 @@ class S3Test extends FlatSpec {
 
   "dataType" should "return a csv data type." in {
     val s3 = new S3(csv)
-    assert(s3.dataType() == "csv")
+    assert(s3.dataType() == "s3.csv")
   }
 
   "dataType" should "return a parquet data type." in {
     val s3 = new S3(parquet)
-    assert(s3.dataType() == "parquet")
+    assert(s3.dataType() == "s3.parquet")
   }
 }

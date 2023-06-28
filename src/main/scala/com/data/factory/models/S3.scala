@@ -43,8 +43,8 @@ class S3 extends Serializable {
   }
 
   def dataType(): String = {
-    if (Option(this.csv).isDefined) "csv"
-    else if (Option(this.parquet).isDefined) "parquet"
+    if (Option(this.csv).isDefined) "s3.csv"
+    else if (Option(this.parquet).isDefined) "s3.parquet"
     else "undefined"
   }
 }
