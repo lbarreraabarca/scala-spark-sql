@@ -10,6 +10,7 @@ class TableSpec extends Serializable{
   var csv: Csv = _
   var parquet: Parquet = _
   var avro: Avro = _
+  var s3: S3 = _
 
   def this(tableName: String) = {
     this()
@@ -32,12 +33,19 @@ class TableSpec extends Serializable{
     this.tableName = tableName
     this.avro = avro
   }
+
+  def this(tableName: String, s3: S3) = {
+    this(tableName)
+    this.tableName = tableName
+    this.s3 = s3
+  }
   def isValid(): Boolean = try {
     val validator = new FieldValidator()
     validator.validStringField("tableName")(tableName)
     if (Option(this.csv).isDefined) this.csv.isValid()
     else if (Option(this.parquet).isDefined) this.parquet.isValid()
     else if (Option(this.avro).isDefined) this.avro.isValid()
+    else if (Option(this.s3).isDefined) this.s3.isValid()
     else false
   } catch {
     case e: Exception => throw TableSpecException("%s %s".format(e.getClass, e.getMessage))
@@ -47,6 +55,7 @@ class TableSpec extends Serializable{
     if (Option(this.csv).isDefined) "csv"
     else if (Option(this.parquet).isDefined) "parquet"
     else if (Option(this.avro).isDefined) "avro"
+    else if (Option(this.s3).isDefined) this.s3.dataType()
     else "undefined"
   }
 }
